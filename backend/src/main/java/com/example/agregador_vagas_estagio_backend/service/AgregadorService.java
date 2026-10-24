@@ -28,7 +28,9 @@ public class AgregadorService {
 
     //Busca apenas na fonte especificada na URL
     public List<VagaDTO> buscaPorFonte(String fonte, String termo, String local, int pagina) {
-        if (fonte == "") return buscaVagas(termo, local, pagina);
+        if (fonte == null || fonte.isBlank() || fonte.equalsIgnoreCase("todas")) {
+            return buscaVagas(termo, local, pagina);
+        }
         
         String beanName = fonte.toLowerCase() + "Service";
         
