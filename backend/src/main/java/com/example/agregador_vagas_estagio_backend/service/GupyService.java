@@ -87,7 +87,11 @@ public class GupyService implements VagaScraper {
 
         String html = page.content();
         Document doc = Jsoup.parse(html);
+        return parseDocument(doc, local);
+    }
 
+    public List<VagaDTO> parseDocument(Document doc, String local) {
+        List<VagaDTO> vagas = new ArrayList<>();
         Elements jobs = doc.select("main#main-content ul li");
 
         for (Element job : jobs) {
@@ -105,7 +109,7 @@ public class GupyService implements VagaScraper {
 
             Element localElement = job.selectFirst("span[data-testid='job-location']");
             String localizacao = (localElement != null) ? localElement.text() : "Nao informada";
-            if (!local.isBlank() && !localizacao.toLowerCase().contains(local.toLowerCase())) {
+            if (local != null && !local.isBlank() && !localizacao.toLowerCase().contains(local.toLowerCase())) {
                 continue;
             }
 
