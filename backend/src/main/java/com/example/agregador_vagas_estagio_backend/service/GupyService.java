@@ -8,6 +8,7 @@ import com.microsoft.playwright.Page;
 import com.microsoft.playwright.Playwright;
 import com.microsoft.playwright.PlaywrightException;
 
+import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Service
 public class GupyService implements VagaScraper {
     private static final int VAGAS_POR_PAGINA = 10;
@@ -67,7 +69,7 @@ public class GupyService implements VagaScraper {
 
             browser.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Erro ao realizar scraping no Gupy", e);
         }
 
         return listaDeVagas;
@@ -76,7 +78,8 @@ public class GupyService implements VagaScraper {
     private List<VagaDTO> buscarVagasNaPaginaOriginal(Page page, String termo, String local, int paginaOriginal) {
         List<VagaDTO> vagas = new ArrayList<>();
         String urlBase = "https://portal.gupy.io/job-search/term=%s?page=%d";
-        String url = String.format(urlBase, termo, paginaOriginal);
+        String termoEncoded = (termo != null) ? java.net.URLEncoder.encode(termo, java.nio.charset.StandardCharsets.UTF_8) : "";
+        String url = String.format(urlBase, termoEncoded, paginaOriginal);
 
         try {
             page.navigate(url);
@@ -87,7 +90,11 @@ public class GupyService implements VagaScraper {
 
         String html = page.content();
         Document doc = Jsoup.parse(html);
+        return parseDocument(doc, local);
+    }
 
+    public List<VagaDTO> parseDocument(Document doc, String local) {
+        List<VagaDTO> vagas = new ArrayList<>();
         Elements jobs = doc.select("main#main-content ul li");
 
         for (Element job : jobs) {
@@ -105,7 +112,7 @@ public class GupyService implements VagaScraper {
 
             Element localElement = job.selectFirst("span[data-testid='job-location']");
             String localizacao = (localElement != null) ? localElement.text() : "Nao informada";
-            if (!local.isBlank() && !localizacao.toLowerCase().contains(local.toLowerCase())) {
+            if (local != null && !local.isBlank() && !localizacao.toLowerCase().contains(local.toLowerCase())) {
                 continue;
             }
 
