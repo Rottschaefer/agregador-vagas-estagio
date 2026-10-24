@@ -9,6 +9,7 @@ const FONTES_PADRAO = [
   "EstagiarBR",
   "AcademiaUniversitario",
   "VagasCom",
+  "Catho",
 ];
 
 const BuscaForm = () => {
