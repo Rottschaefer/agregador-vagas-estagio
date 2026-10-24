@@ -16,12 +16,13 @@ class AgregadorServiceFontesTest {
         List<String> fontes = service.listarFontes();
 
         assertNotNull(fontes);
-        assertEquals(6, fontes.size());
+        assertEquals(7, fontes.size());
         assertTrue(fontes.contains("Gupy"));
         assertTrue(fontes.contains("RecrutaEasy"));
         assertTrue(fontes.contains("Glassdoor"));
         assertTrue(fontes.contains("InfoJobs"));
         assertTrue(fontes.contains("EstagiarBR"));
         assertTrue(fontes.contains("AcademiaUniversitario"));
+        assertTrue(fontes.contains("VagasCom"));
     }
 }

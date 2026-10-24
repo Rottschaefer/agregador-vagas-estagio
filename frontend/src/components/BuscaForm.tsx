@@ -8,6 +8,7 @@ const FONTES_PADRAO = [
   "InfoJobs",
   "EstagiarBR",
   "AcademiaUniversitario",
+  "VagasCom",
 ];
 
 const BuscaForm = () => {

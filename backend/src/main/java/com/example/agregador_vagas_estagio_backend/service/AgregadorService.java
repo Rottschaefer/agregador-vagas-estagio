@@ -27,7 +27,8 @@ public class AgregadorService {
         "Glassdoor",
         "InfoJobs",
         "EstagiarBR",
-        "AcademiaUniversitario"
+        "AcademiaUniversitario",
+        "VagasCom"
     };
 
     public List<String> listarFontes() {
