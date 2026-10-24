@@ -8,12 +8,21 @@ const ListaVagas = () => {
   const fonteSelecionada = useBuscaStore((s) => s.fontePesquisa);
   const paginaAtual = useBuscaStore((s) => s.paginaAtual);
   const setPaginaAtual = useBuscaStore((s) => s.setPaginaAtual);
+  const pesquisaIniciada = useBuscaStore((s) => s.pesquisaIniciada);
 
   const {
     data: vagas,
     isFetching: isFetching,
     error: error,
-  } = useBuscaVagas(nomeVaga, localidade, fonteSelecionada, paginaAtual);
+  } = useBuscaVagas(nomeVaga, localidade, fonteSelecionada, paginaAtual, pesquisaIniciada);
+
+  if (!pesquisaIniciada) {
+    return (
+      <div className="w-full text-center py-12 text-gray-500">
+        <p className="text-lg">Preencha os filtros acima e clique em "Buscar" para encontrar vagas de estágio.</p>
+      </div>
+    );
+  }
 
   if (isFetching)
     return (
