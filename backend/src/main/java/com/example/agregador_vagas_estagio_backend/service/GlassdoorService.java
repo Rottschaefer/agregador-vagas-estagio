@@ -26,6 +26,7 @@ public class GlassdoorService implements VagaScraper{
                 query = query + " " + local.trim();
             }
 
+            String urlBase = "https://www.glassdoor.com.br/Vaga/%s-vagas-SRCH_IL.0,6_IN36_KO0,%d.htm";
             String queryEncoded = java.net.URLEncoder.encode(query, java.nio.charset.StandardCharsets.UTF_8);
             String url = String.format(urlBase, queryEncoded, queryEncoded.length());
 
