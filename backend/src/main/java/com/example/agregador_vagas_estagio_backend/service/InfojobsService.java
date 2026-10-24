@@ -25,9 +25,10 @@ public class InfojobsService implements VagaScraper{
             if (local != null && !local.isBlank()) {
                 query = query.isBlank() ? local : query + " " + local;
             }
+            String queryEncoded = java.net.URLEncoder.encode(query, java.nio.charset.StandardCharsets.UTF_8);
 
             String urlBase = "https://www.infojobs.com.br/empregos.aspx?palabra=%s";
-            String url = String.format(urlBase, query);
+            String url = String.format(urlBase, queryEncoded);
 
             Document doc = Jsoup.connect(url)
             .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")

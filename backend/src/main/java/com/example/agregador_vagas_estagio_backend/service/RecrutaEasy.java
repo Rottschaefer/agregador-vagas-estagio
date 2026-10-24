@@ -37,9 +37,10 @@ public class RecrutaEasy implements VagaScraper {
                     termoBusca = termoBusca.isBlank() ? loc : termoBusca + " " + loc;
                 }
             }
+            String termoEncoded = java.net.URLEncoder.encode(termoBusca, java.nio.charset.StandardCharsets.UTF_8);
 
             String urlBase = "https://recrutaeasy.com.br/vagas?search=%s&pag=%d" + stateParam;
-            String url = String.format(urlBase, termoBusca, pagina);
+            String url = String.format(urlBase, termoEncoded, pagina);
 
             Browser browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(true));
             Page page = browser.newPage();

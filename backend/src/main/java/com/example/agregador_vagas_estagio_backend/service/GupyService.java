@@ -76,7 +76,8 @@ public class GupyService implements VagaScraper {
     private List<VagaDTO> buscarVagasNaPaginaOriginal(Page page, String termo, String local, int paginaOriginal) {
         List<VagaDTO> vagas = new ArrayList<>();
         String urlBase = "https://portal.gupy.io/job-search/term=%s?page=%d";
-        String url = String.format(urlBase, termo, paginaOriginal);
+        String termoEncoded = (termo != null) ? java.net.URLEncoder.encode(termo, java.nio.charset.StandardCharsets.UTF_8) : "";
+        String url = String.format(urlBase, termoEncoded, paginaOriginal);
 
         try {
             page.navigate(url);
