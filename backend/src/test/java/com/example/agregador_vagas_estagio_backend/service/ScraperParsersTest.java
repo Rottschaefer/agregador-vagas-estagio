@@ -91,7 +91,7 @@ class ScraperParsersTest {
     @DisplayName("RecrutaEasy: deve extrair vagas da fixture HTML")
     void deveExtrairVagasRecrutaEasy() throws IOException {
         Document doc = carregarFixture("recrutaeasy.html");
-        RecrutaEasy service = new RecrutaEasy();
+        RecrutaEasyService service = new RecrutaEasyService();
 
         List<VagaDTO> vagas = service.parseDocument(doc, "");
 
