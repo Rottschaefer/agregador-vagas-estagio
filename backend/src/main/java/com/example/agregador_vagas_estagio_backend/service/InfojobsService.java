@@ -21,9 +21,13 @@ public class InfojobsService implements VagaScraper{
         List<VagaDTO> listaDeVagas = new ArrayList<>();
 
         try {  
-            String urlBase = "https://www.infojobs.com.br/empregos.aspx?palabra=%s&provincia=182";
+            String query = (termo != null && !termo.isBlank()) ? termo : "";
+            if (local != null && !local.isBlank()) {
+                query = query.isBlank() ? local : query + " " + local;
+            }
 
-            String url = String.format(urlBase, termo);
+            String urlBase = "https://www.infojobs.com.br/empregos.aspx?palabra=%s";
+            String url = String.format(urlBase, query);
 
             Document doc = Jsoup.connect(url)
             .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")

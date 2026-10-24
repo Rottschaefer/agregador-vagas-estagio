@@ -24,11 +24,22 @@ public class RecrutaEasy implements VagaScraper {
     public List<VagaDTO> retornaVagas(String termo, String local, int pagina) {
         List<VagaDTO> listaDeVagas = new ArrayList<>();
 
-        pagina -= 1; //Recruta Easy começa a contagem em 0
+        pagina = Math.max(0, pagina - 1); //Recruta Easy começa a contagem em 0
 
         try (Playwright playwright = Playwright.create()){  
-            String urlBase = "https://recrutaeasy.com.br/vagas?search=%s&pag=%d&state=RJ";
-            String url = String.format(urlBase, termo, pagina);
+            String stateParam = "";
+            String termoBusca = (termo != null) ? termo : "";
+            if (local != null && !local.isBlank()) {
+                String loc = local.trim();
+                if (loc.length() == 2) {
+                    stateParam = "&state=" + loc.toUpperCase();
+                } else {
+                    termoBusca = termoBusca.isBlank() ? loc : termoBusca + " " + loc;
+                }
+            }
+
+            String urlBase = "https://recrutaeasy.com.br/vagas?search=%s&pag=%d" + stateParam;
+            String url = String.format(urlBase, termoBusca, pagina);
 
             Browser browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(true));
             Page page = browser.newPage();
@@ -62,6 +73,12 @@ public class RecrutaEasy implements VagaScraper {
 
                 if (!infoSpans.isEmpty()) {
                     localizacao = infoSpans.first().text(); 
+                }
+
+                if (local != null && !local.isBlank()) {
+                    if (!localizacao.toLowerCase().contains(local.toLowerCase())) {
+                        continue;
+                    }
                 }
 
                 Element linkElement = job.selectFirst("a[href]"); 

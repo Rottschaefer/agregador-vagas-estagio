@@ -33,9 +33,14 @@ public class AcademiaUniversitarioService implements VagaScraper{
             page.navigate("https://app.academiadouniversitario.com.br/");
 
     
+            String termoBusca = (termo != null && !termo.isBlank()) ? termo : "";
+            if (local != null && !local.isBlank()) {
+                termoBusca = termoBusca.isBlank() ? local : termoBusca + " " + local;
+            }
+
             Locator inputBusca = page.locator("input[name='job']");
 
-            inputBusca.fill(termo);
+            inputBusca.fill(termoBusca);
 
             page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Buscar minha vaga")).first().click();
             
@@ -63,13 +68,24 @@ public class AcademiaUniversitarioService implements VagaScraper{
                 Element tituloElement = h3.get(1); 
                 String titulo = (tituloElement != null) ? tituloElement.text() : "Título não encontrado";
 
-                 Element localizacaoElement = job.selectFirst("span:contains(SP), span:contains(RJ)"); 
-                 String localizacao = (localizacaoElement != null) ? localizacaoElement.text() : "Remoto/Não informado";
-                 if (!local.isBlank()) {
+                Element localizacaoElement = null;
+                Elements spans = job.select("span");
+                for (Element span : spans) {
+                    String txt = span.text().trim();
+                    if (!txt.isEmpty() && (txt.matches("^[A-Z]{2}$") || txt.toLowerCase().contains("remoto") || txt.toLowerCase().contains("híbrido") || txt.contains("-") || txt.contains(","))) {
+                        localizacaoElement = span;
+                        break;
+                    }
+                }
+                if (localizacaoElement == null && !spans.isEmpty()) {
+                    localizacaoElement = spans.first();
+                }
+                String localizacao = (localizacaoElement != null) ? localizacaoElement.text() : "Remoto/Não informado";
+                if (local != null && !local.isBlank()) {
                     if (!localizacao.toLowerCase().contains(local.toLowerCase())) {
                         continue;
                     }
-                 }
+                }
 
                  Element linkElement = job.selectFirst("a[href^=/vaga/]"); 
                  if (linkElement == null) {

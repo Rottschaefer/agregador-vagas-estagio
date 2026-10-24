@@ -21,9 +21,14 @@ public class GlassdoorService implements VagaScraper{
         List<VagaDTO> listaDeVagas = new ArrayList<>();
 
         try {  
+            String query = (termo != null && !termo.isBlank()) ? termo : "estagio";
+            if (local != null && !local.isBlank()) {
+                query = query + " " + local.trim();
+            }
+
             String urlBase = "https://www.glassdoor.com.br/Vaga/%s-vagas-SRCH_IL.0,6_IN36_KO0,%d.htm";
 
-            String url = String.format(urlBase, termo, termo.length());
+            String url = String.format(urlBase, query, query.length());
 
             Document doc = Jsoup.connect(url)
                     .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
