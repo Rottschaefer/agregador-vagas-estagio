@@ -2,7 +2,6 @@ package com.example.agregador_vagas_estagio_backend.controller;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -15,8 +14,7 @@ import com.example.agregador_vagas_estagio_backend.service.AgregadorService;
 @RequestMapping("buscar-vagas")
 public class BuscaVagas {
     
-    @Autowired
-    private AgregadorService agregadorService;
+    private final AgregadorService agregadorService;
 
     public BuscaVagas(AgregadorService agregadorService) {
         this.agregadorService = agregadorService;

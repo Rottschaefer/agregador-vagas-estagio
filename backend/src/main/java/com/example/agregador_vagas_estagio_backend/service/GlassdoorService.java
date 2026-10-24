@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList; // Import necessário para a lista
 import java.util.List;
 
+import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -13,7 +14,8 @@ import org.springframework.stereotype.Service;
 import com.example.agregador_vagas_estagio_backend.dto.VagaDTO;
 import com.example.agregador_vagas_estagio_backend.interfaces.VagaScraper;
 
-@Service // Permite que o Spring injete o GlassdoorService lá no seu AgregadorService
+@Slf4j
+@Service
 public class GlassdoorService implements VagaScraper{
 
     @Override
@@ -35,7 +37,7 @@ public class GlassdoorService implements VagaScraper{
             return parseDocument(doc, local);
 
         } catch (IOException e) {
-            e.printStackTrace(); 
+            log.error("Erro ao realizar scraping no Glassdoor", e); 
             return new ArrayList<>(); 
         }
     }

@@ -11,14 +11,16 @@ import org.springframework.stereotype.Service;
 
 import com.example.agregador_vagas_estagio_backend.dto.VagaDTO;
 import com.example.agregador_vagas_estagio_backend.interfaces.VagaScraper;
+import lombok.extern.slf4j.Slf4j;
 import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.BrowserType;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.Playwright;
 import com.microsoft.playwright.options.LoadState;
 
+@Slf4j
 @Service("recrutaeasyService") 
-public class RecrutaEasy implements VagaScraper {
+public class RecrutaEasyService implements VagaScraper {
 
     @Override
     public List<VagaDTO> retornaVagas(String termo, String local, int pagina) {
@@ -57,8 +59,7 @@ public class RecrutaEasy implements VagaScraper {
             return parseDocument(doc, local);
 
         } catch (Exception e) { 
-  
-            System.err.println("Erro ao realizar scraping com Playwright: " + e.getMessage());
+            log.error("Erro ao realizar scraping no RecrutaEasy", e);
             return listaDeVagas; 
         }
     }

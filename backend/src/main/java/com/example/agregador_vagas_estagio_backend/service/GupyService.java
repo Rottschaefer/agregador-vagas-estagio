@@ -8,6 +8,7 @@ import com.microsoft.playwright.Page;
 import com.microsoft.playwright.Playwright;
 import com.microsoft.playwright.PlaywrightException;
 
+import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Service
 public class GupyService implements VagaScraper {
     private static final int VAGAS_POR_PAGINA = 10;
@@ -67,7 +69,7 @@ public class GupyService implements VagaScraper {
 
             browser.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Erro ao realizar scraping no Gupy", e);
         }
 
         return listaDeVagas;

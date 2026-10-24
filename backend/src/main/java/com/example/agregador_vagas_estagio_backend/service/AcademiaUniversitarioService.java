@@ -3,6 +3,7 @@ package com.example.agregador_vagas_estagio_backend.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -19,7 +20,8 @@ import com.microsoft.playwright.Playwright;
 import com.microsoft.playwright.options.AriaRole;
 import com.microsoft.playwright.options.LoadState;
 
-@Service("academiauniversitarioService") //As fontes passam todas pra minúsculo, aí sem essa linha daria erro
+@Slf4j
+@Service("academiauniversitarioService")
 public class AcademiaUniversitarioService implements VagaScraper{
 
     @Override
@@ -55,7 +57,7 @@ public class AcademiaUniversitarioService implements VagaScraper{
 
             return parseDocument(doc, local);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Erro ao realizar scraping na Academia do Universitário", e);
         }
 
         return listaDeVagas;
@@ -104,11 +106,11 @@ public class AcademiaUniversitarioService implements VagaScraper{
                     VagaDTO vaga = new VagaDTO(titulo, empresa, localizacao, link, "Academia do Universitário");
                     listaDeVagas.add(vaga);
                 } catch (Exception cardError) {
-                    System.err.println("Erro ao processar card da Academia do Universitário: " + cardError.getMessage());
+                    log.warn("Erro ao processar card da Academia do Universitário: {}", cardError.getMessage());
                 }
             }
         } else {
-            System.out.println("Não foi possível encontrar o container 'jobs-list-grid'.");
+            log.warn("Não foi possível encontrar o container 'jobs-list-grid'.");
         }
 
         return listaDeVagas;
