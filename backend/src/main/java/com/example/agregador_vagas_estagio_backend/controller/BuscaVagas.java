@@ -30,5 +30,10 @@ public class BuscaVagas {
         return agregadorService.buscaPorFonte(fonte, termo, local, pagina);
     }
 
+    @GetMapping("fontes")
+    public List<String> listarFontes() {
+        return agregadorService.listarFontes();
+    }
+
 
 }

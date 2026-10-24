@@ -30,6 +30,10 @@ public class AgregadorService {
         "AcademiaUniversitario"
     };
 
+    public List<String> listarFontes() {
+        return List.of(fontes);
+    }
+
     // Injeta todos os services que implementam VagaScraper aqui automaticamente
     @Autowired
     private Map<String, VagaScraper> scrapers;
