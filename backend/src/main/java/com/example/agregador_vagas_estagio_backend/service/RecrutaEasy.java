@@ -54,52 +54,45 @@ public class RecrutaEasy implements VagaScraper {
             browser.close();
 
             Document doc = Jsoup.parse(htmlRenderizado);
-
-            Elements jobs = doc.select("article.relative.bg-white.shadow-xl");
-
-
-
-            for (Element job : jobs) {
-
-                
-                Element titleElement = job.selectFirst("h1"); 
-                String titulo = (titleElement != null) ? titleElement.text() : "Não encontrado";
-                
-                Element employerElement = job.selectFirst("h1 + p"); 
-                String empresa = (employerElement != null) ? employerElement.text() : "Não encontrado";
-                
-                Elements infoSpans = job.select("span[class='flex items-center gap-1.5']");
-
-                String localizacao = "Não encontrado";
-
-                if (!infoSpans.isEmpty()) {
-                    localizacao = infoSpans.first().text(); 
-                }
-
-                if (local != null && !local.isBlank()) {
-                    if (!localizacao.toLowerCase().contains(local.toLowerCase())) {
-                        continue;
-                    }
-                }
-
-                Element linkElement = job.selectFirst("a[href]"); 
-                String linkVaga = (linkElement != null) ? linkElement.attr("href") : "";
-                
-                if (linkVaga.startsWith("/")) {
-                    linkVaga = "https://recrutaeasy.com.br" + linkVaga;
-                }
-
-                VagaDTO vaga = new VagaDTO(titulo, empresa, localizacao, linkVaga, "RecrutaEasy");
-                
-                listaDeVagas.add(vaga);
-            }
-
-            return listaDeVagas;
+            return parseDocument(doc, local);
 
         } catch (Exception e) { 
   
             System.err.println("Erro ao realizar scraping com Playwright: " + e.getMessage());
             return listaDeVagas; 
         }
+    }
+
+    public List<VagaDTO> parseDocument(Document doc, String local) {
+        List<VagaDTO> listaDeVagas = new ArrayList<>();
+        Elements jobs = doc.select("article.relative.bg-white.shadow-xl");
+
+        for (Element job : jobs) {
+            Element titleElement = job.selectFirst("h1"); 
+            String titulo = (titleElement != null) ? titleElement.text() : "Não encontrado";
+            
+            Element employerElement = job.selectFirst("h1 + p"); 
+            String empresa = (employerElement != null) ? employerElement.text() : "Não encontrado";
+            
+            Elements infoSpans = job.select("span[class='flex items-center gap-1.5']");
+
+            String localizacao = "Não encontrado";
+
+            if (!infoSpans.isEmpty()) {
+                localizacao = infoSpans.first().text(); 
+            }
+
+            Element linkElement = job.selectFirst("a[href]"); 
+            String linkVaga = (linkElement != null) ? linkElement.attr("href") : "";
+            
+            if (linkVaga.startsWith("/")) {
+                linkVaga = "https://recrutaeasy.com.br" + linkVaga;
+            }
+
+            VagaDTO vaga = new VagaDTO(titulo, empresa, localizacao, linkVaga, "RecrutaEasy");
+            listaDeVagas.add(vaga);
+        }
+
+        return listaDeVagas;
     }
 }

@@ -51,12 +51,23 @@ public class AcademiaUniversitarioService implements VagaScraper{
 
             String htmlRenderizado = page.content();
             Document doc = Jsoup.parse(htmlRenderizado);
+            browser.close();
 
-            Element jobsListDiv = doc.selectFirst("div[data-testid=jobs-list-grid]");
+            return parseDocument(doc, local);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-            if (jobsListDiv != null) {
-                Elements jobs = jobsListDiv.select("article");
-                
+        return listaDeVagas;
+    }
+
+    public List<VagaDTO> parseDocument(Document doc, String local) {
+        List<VagaDTO> listaDeVagas = new ArrayList<>();
+        Element jobsListDiv = doc.selectFirst("div[data-testid=jobs-list-grid]");
+
+        if (jobsListDiv != null) {
+            Elements jobs = jobsListDiv.select("article");
+            
             for (Element job : jobs) {
                 try {
                     Elements h3 = job.select("h3");
@@ -96,13 +107,8 @@ public class AcademiaUniversitarioService implements VagaScraper{
                     System.err.println("Erro ao processar card da Academia do Universitário: " + cardError.getMessage());
                 }
             }
-            } else {
-                System.out.println("Não foi possível encontrar o container 'jobs-list-grid'.");
-            }
-
-            browser.close();
-        } catch (Exception e) {
-            e.printStackTrace();
+        } else {
+            System.out.println("Não foi possível encontrar o container 'jobs-list-grid'.");
         }
 
         return listaDeVagas;
