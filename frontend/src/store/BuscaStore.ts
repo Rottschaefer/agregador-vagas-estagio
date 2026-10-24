@@ -8,6 +8,7 @@ interface BuscaStore {
   fonteInput: string;
   fontePesquisa: string;
   paginaAtual: number;
+  pesquisaIniciada: boolean;
 
   setNomeInput: (novoNomeInput: string) => void;
   setNomePesquisa: (novoNomePesquisa: string) => void;
@@ -26,8 +27,9 @@ const useBuscaStore = create<BuscaStore>((set, get) => ({
   localInput: "",
   localPesquisa: "",
   fonteInput: "Gupy",
-  fontePesquisa: "Gupy",
+  fontePesquisa: "",
   paginaAtual: 1,
+  pesquisaIniciada: false,
 
   setNomeInput: (novoNomeInput: string) =>
     set(() => ({ nomeInput: novoNomeInput })),
@@ -49,6 +51,7 @@ const useBuscaStore = create<BuscaStore>((set, get) => ({
       localPesquisa: get().localInput,
       fontePesquisa: get().fonteInput,
       paginaAtual: 1,
+      pesquisaIniciada: true,
     }),
 }));
 
