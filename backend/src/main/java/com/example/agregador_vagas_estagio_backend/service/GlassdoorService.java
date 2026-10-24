@@ -44,7 +44,7 @@ public class GlassdoorService implements VagaScraper{
                     
                     Element locationElement = job.selectFirst("div[id^=job-location]");
                     String localizacao = (locationElement != null) ? locationElement.text() : "Não encontrado";
-                    if (!local.isBlank()) {
+                    if (local != null && !local.isBlank()) {
                         if (!localizacao.toLowerCase().contains(local.toLowerCase())) {
                             continue;
                         }
