@@ -25,6 +25,7 @@ const BuscaForm = () => {
     "InfoJobs",
     "EstagiarBR",
     "AcademiaUniversitario",
+    "VagasCom",
   ];
 
   const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {

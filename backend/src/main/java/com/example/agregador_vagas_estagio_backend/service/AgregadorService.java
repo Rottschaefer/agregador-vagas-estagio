@@ -19,7 +19,8 @@ public class AgregadorService {
         "Glassdoor",
         "InfoJobs",
         "EstagiarBR",
-        "AcademiaUniversitario"
+        "AcademiaUniversitario",
+        "VagasCom"
     };
 
     // Injeta todos os services que implementam VagaScraper aqui automaticamente
