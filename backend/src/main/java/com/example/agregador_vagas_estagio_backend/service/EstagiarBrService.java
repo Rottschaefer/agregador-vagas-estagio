@@ -21,9 +21,11 @@ public class EstagiarBrService implements VagaScraper{
         List<VagaDTO> listaDeVagas = new ArrayList<>();
 
         try {  
-            String urlBase = "https://www.estagiar-br.com.br/oportunidades/estagio";
+            String termoParam = (termo != null && !termo.isBlank()) ? java.net.URLEncoder.encode(termo, java.nio.charset.StandardCharsets.UTF_8) : "";
+            int paginaParam = Math.max(1, pagina);
+            String urlBase = "https://www.estagiar-br.com.br/oportunidades/estagio?busca=%s&page=%d";
 
-            String url = String.format(urlBase, termo);
+            String url = String.format(urlBase, termoParam, paginaParam);
             
             Document doc = Jsoup.connect(url)
                     .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
