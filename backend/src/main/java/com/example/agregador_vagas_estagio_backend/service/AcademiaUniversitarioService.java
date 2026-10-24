@@ -3,6 +3,7 @@ package com.example.agregador_vagas_estagio_backend.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -19,7 +20,8 @@ import com.microsoft.playwright.Playwright;
 import com.microsoft.playwright.options.AriaRole;
 import com.microsoft.playwright.options.LoadState;
 
-@Service("academiauniversitarioService") //As fontes passam todas pra minúsculo, aí sem essa linha daria erro
+@Slf4j
+@Service("academiauniversitarioService")
 public class AcademiaUniversitarioService implements VagaScraper{
 
     @Override
@@ -83,12 +85,12 @@ public class AcademiaUniversitarioService implements VagaScraper{
                  listaDeVagas.add(vaga);
             }
             } else {
-                System.out.println("Não foi possível encontrar o container 'jobs-list-grid'.");
+                log.warn("Não foi possível encontrar o container 'jobs-list-grid'.");
             }
 
             browser.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Erro ao realizar scraping na Academia do Universitário", e);
         }
 
         return listaDeVagas;

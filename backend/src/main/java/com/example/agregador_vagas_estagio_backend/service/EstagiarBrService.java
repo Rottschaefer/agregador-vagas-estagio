@@ -4,16 +4,18 @@ import java.io.IOException;
 import java.util.ArrayList; // Import necessário para a lista
 import java.util.List;
 
+import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.springframework.stereotype.Service; // Não esqueça do @Service aqui também!
+import org.springframework.stereotype.Service;
 
 import com.example.agregador_vagas_estagio_backend.dto.VagaDTO;
 import com.example.agregador_vagas_estagio_backend.interfaces.VagaScraper;
 
-@Service("estagiarbrService") //As fontes passam todas pra minúsculo, aí sem essa linha daria erro
+@Slf4j
+@Service("estagiarbrService")
 public class EstagiarBrService implements VagaScraper{
 
     @Override
@@ -75,7 +77,7 @@ public class EstagiarBrService implements VagaScraper{
             return listaDeVagas;
 
         } catch (IOException e) {
-            e.printStackTrace(); 
+            log.error("Erro ao realizar scraping no EstagiarBR", e);
             // 5. Se der erro, retorna a lista vazia (melhor do que estourar null no controller)
             return listaDeVagas; 
         }
