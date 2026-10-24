@@ -53,34 +53,32 @@ public class AcademiaUniversitarioService implements VagaScraper{
                 Elements jobs = jobsListDiv.select("article");
                 
             for (Element job : jobs) {
-                
-                Elements h3 = job.select("h3");
-                
-                Element empresaElement = h3.get(0);
-                String empresa = (empresaElement != null) ? empresaElement.text() : "Não informada";
+                try {
+                    Elements h3 = job.select("h3");
+                    
+                    String empresa = !h3.isEmpty() ? h3.get(0).text() : "Não informada";
+                    String titulo = h3.size() >= 2 ? h3.get(1).text() : (!h3.isEmpty() ? h3.get(0).text() : "Título não encontrado");
 
-
-                Element tituloElement = h3.get(1); 
-                String titulo = (tituloElement != null) ? tituloElement.text() : "Título não encontrado";
-
-                 Element localizacaoElement = job.selectFirst("span:contains(SP), span:contains(RJ)"); 
-                 String localizacao = (localizacaoElement != null) ? localizacaoElement.text() : "Remoto/Não informado";
-                 if (local != null && !local.isBlank()) {
-                    if (!localizacao.toLowerCase().contains(local.toLowerCase())) {
-                        continue;
+                    Element localizacaoElement = job.selectFirst("span:contains(SP), span:contains(RJ)"); 
+                    String localizacao = (localizacaoElement != null) ? localizacaoElement.text() : "Remoto/Não informado";
+                    if (local != null && !local.isBlank()) {
+                        if (!localizacao.toLowerCase().contains(local.toLowerCase())) {
+                            continue;
+                        }
                     }
-                 }
 
-                 Element linkElement = job.selectFirst("a[href^=/vaga/]"); 
-                 if (linkElement == null) {
-                     linkElement = job.selectFirst("a"); 
-                 }
-                 String linkRelativo = (linkElement != null) ? linkElement.attr("href") : "";
-                 String link = !linkRelativo.isEmpty() ? "https://app.academiadouniversitario.com.br" + linkRelativo : "";
+                    Element linkElement = job.selectFirst("a[href^=/vaga/]"); 
+                    if (linkElement == null) {
+                        linkElement = job.selectFirst("a"); 
+                    }
+                    String linkRelativo = (linkElement != null) ? linkElement.attr("href") : "";
+                    String link = !linkRelativo.isEmpty() ? "https://app.academiadouniversitario.com.br" + linkRelativo : "";
 
-                 VagaDTO vaga = new VagaDTO(titulo, empresa, localizacao, link, "Academia do Universitário");
-                
-                 listaDeVagas.add(vaga);
+                    VagaDTO vaga = new VagaDTO(titulo, empresa, localizacao, link, "Academia do Universitário");
+                    listaDeVagas.add(vaga);
+                } catch (Exception cardError) {
+                    System.err.println("Erro ao processar card da Academia do Universitário: " + cardError.getMessage());
+                }
             }
             } else {
                 System.out.println("Não foi possível encontrar o container 'jobs-list-grid'.");
