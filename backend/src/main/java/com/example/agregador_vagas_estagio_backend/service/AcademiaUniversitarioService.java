@@ -65,7 +65,7 @@ public class AcademiaUniversitarioService implements VagaScraper{
 
                  Element localizacaoElement = job.selectFirst("span:contains(SP), span:contains(RJ)"); 
                  String localizacao = (localizacaoElement != null) ? localizacaoElement.text() : "Remoto/Não informado";
-                 if (!local.isBlank()) {
+                 if (local != null && !local.isBlank()) {
                     if (!localizacao.toLowerCase().contains(local.toLowerCase())) {
                         continue;
                     }
