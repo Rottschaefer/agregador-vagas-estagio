@@ -16,6 +16,7 @@ public class AgregadorService {
 
     String[] fontes = {
         "Gupy",
+        "RecrutaEasy",
         "Glassdoor",
         "InfoJobs",
         "EstagiarBR",
