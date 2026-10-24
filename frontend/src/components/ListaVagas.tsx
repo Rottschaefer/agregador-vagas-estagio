@@ -1,5 +1,6 @@
 import { useBuscaVagas } from "../hooks/useBuscaVagas";
 import useBuscaStore from "../store/BuscaStore";
+import type { Vaga } from "../types/vaga";
 
 const ListaVagas = () => {
   const nomeVaga = useBuscaStore((s) => s.nomePesquisa);
@@ -48,12 +49,15 @@ const ListaVagas = () => {
       )}
 
       {!error &&
-        vagas?.map((vaga: any) => (
-          <a href={vaga.link} target="_blank" className="block hover:scale-102">
-            <div
-              key={vaga.id}
-              className="bg-gray-100 rounded-3xl p-6 text-purple-600 shadow-md h-full"
-            >
+        vagas?.map((vaga: Vaga, index: number) => (
+          <a
+            key={`${vaga.fonte}-${vaga.link}-${index}`}
+            href={vaga.link}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block hover:scale-102"
+          >
+            <div className="bg-gray-100 rounded-3xl p-6 text-purple-600 shadow-md h-full">
               <div className="flex justify-between items-start">
                 <h2 className="text-xl font-bold">{vaga.titulo}</h2>
 

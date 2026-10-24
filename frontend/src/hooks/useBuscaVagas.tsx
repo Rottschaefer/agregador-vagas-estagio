@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import type { Vaga } from "../types/vaga";
 import { URL_BASE } from "../utils/constantes";
 
 const fetchVagas = async (
@@ -6,8 +7,8 @@ const fetchVagas = async (
   local: string,
   fonte: string,
   pagina: number,
-) => {
-  const fonteParam = fonte === "Todas" ? "" : fonte.toLowerCase();
+): Promise<Vaga[]> => {
+  const fonteParam = !fonte || fonte === "Todas" ? "" : fonte.toLowerCase();
 
   const url = `${URL_BASE}/buscar-vagas?fonte=${fonteParam}&termo=${nome}&local=${local}&pagina=${pagina}`;
 
@@ -26,7 +27,7 @@ export function useBuscaVagas(
   fonte: string,
   pagina: number,
 ) {
-  return useQuery({
+  return useQuery<Vaga[]>({
     queryKey: ["vagas", nome, local, fonte, pagina],
     queryFn: () => fetchVagas(nome, local, fonte, pagina),
   });
