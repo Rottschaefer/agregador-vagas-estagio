@@ -51,7 +51,7 @@ const ListaVagas = () => {
       {!error &&
         vagas?.map((vaga: Vaga, index: number) => (
           <a
-            key={`${vaga.fonte}-${vaga.link}-${index}`}
+            key={vaga.id ?? `${vaga.fonte}-${vaga.link}-${index}`}
             href={vaga.link}
             target="_blank"
             rel="noopener noreferrer"
