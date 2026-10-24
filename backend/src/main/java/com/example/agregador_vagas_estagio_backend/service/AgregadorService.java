@@ -16,11 +16,16 @@ public class AgregadorService {
 
     String[] fontes = {
         "Gupy",
+        "RecrutaEasy",
         "Glassdoor",
         "InfoJobs",
         "EstagiarBR",
         "AcademiaUniversitario"
     };
+
+    public List<String> listarFontes() {
+        return List.of(fontes);
+    }
 
     // Injeta todos os services que implementam VagaScraper aqui automaticamente
     @Autowired

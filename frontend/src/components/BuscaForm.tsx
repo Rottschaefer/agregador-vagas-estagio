@@ -1,4 +1,14 @@
 import useBuscaStore from "../store/BuscaStore";
+import { useFontes } from "../hooks/useFontes";
+
+const FONTES_PADRAO = [
+  "Gupy",
+  "RecrutaEasy",
+  "Glassdoor",
+  "InfoJobs",
+  "EstagiarBR",
+  "AcademiaUniversitario",
+];
 
 const BuscaForm = () => {
   const nomeVaga = useBuscaStore((s) => s.nomeInput);
@@ -9,6 +19,8 @@ const BuscaForm = () => {
   const setFonteSelecionada = useBuscaStore((s) => s.setFonteInput);
 
   const handleBuscar = useBuscaStore((s) => s.buscar);
+  const { data: fontesApi } = useFontes();
+  const fontes = fontesApi && fontesApi.length > 0 ? fontesApi : FONTES_PADRAO;
 
   const handleSelecionarFonte = (fonte: string) => {
     if (fonteSelecionada === fonte) {
@@ -17,15 +29,6 @@ const BuscaForm = () => {
       setFonteSelecionada(fonte);
     }
   };
-
-  const fontes = [
-    "Gupy",
-    "RecrutaEasy",
-    "Glassdoor",
-    "InfoJobs",
-    "EstagiarBR",
-    "AcademiaUniversitario",
-  ];
 
   const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
