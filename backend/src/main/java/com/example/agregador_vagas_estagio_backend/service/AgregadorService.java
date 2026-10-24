@@ -10,6 +10,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Service
 public class AgregadorService {
@@ -26,13 +31,28 @@ public class AgregadorService {
     @Autowired
     private Map<String, VagaScraper> scrapers;
 
+    private final ExecutorService executor;
+
+    public AgregadorService() {
+        this.executor = Executors.newVirtualThreadPerTaskExecutor();
+    }
+
+    public AgregadorService(Map<String, VagaScraper> scrapers) {
+        this(scrapers, Executors.newVirtualThreadPerTaskExecutor());
+    }
+
+    public AgregadorService(Map<String, VagaScraper> scrapers, ExecutorService executor) {
+        this.scrapers = scrapers;
+        this.executor = executor != null ? executor : Executors.newVirtualThreadPerTaskExecutor();
+    }
+
     //Busca apenas na fonte especificada na URL
     public List<VagaDTO> buscaPorFonte(String fonte, String termo, String local, int pagina) {
         if (fonte == "") return buscaVagas(termo, local, pagina);
         
         String beanName = fonte.toLowerCase() + "Service";
         
-        VagaScraper scraper = scrapers.get(beanName);
+        VagaScraper scraper = scrapers != null ? scrapers.get(beanName) : null;
         
         if (scraper == null) {
             throw new IllegalArgumentException("Fonte de vagas inválida: " + fonte);
@@ -42,30 +62,39 @@ public class AgregadorService {
     }
 
     public List<VagaDTO> buscaVagas(String termo, String local, int pagina) {
-        // Monta o nome do Bean esperado (Ex: se vier "gupy", vira "gupyService")
-        
-        List<VagaDTO> vagas = new ArrayList<>();
-        
+        List<CompletableFuture<List<VagaDTO>>> futures = new ArrayList<>();
+
         for (String fonte : fontes) {
             String beanName = fonte.toLowerCase() + "Service";
-
-            VagaScraper scraper = scrapers.get(beanName);
+            VagaScraper scraper = scrapers != null ? scrapers.get(beanName) : null;
 
             if (scraper == null) {
-                throw new IllegalArgumentException("Fonte de vagas inválida: " + fonte);
+                continue;
             }
 
-            try {
-                vagas.addAll(scraper.retornaVagas(termo, local, pagina));
-            } catch (Exception e) {
-                System.out.println("Erro em " + fonte);
-                e.printStackTrace();
-            }
+            CompletableFuture<List<VagaDTO>> future = CompletableFuture.supplyAsync(() -> {
+                try {
+                    return scraper.retornaVagas(termo, local, pagina);
+                } catch (Exception e) {
+                    System.err.println("Erro ao buscar vagas na fonte " + fonte + ": " + e.getMessage());
+                    return Collections.<VagaDTO>emptyList();
+                }
+            }, executor)
+            .orTimeout(12, TimeUnit.SECONDS)
+            .exceptionally(ex -> {
+                System.err.println("Timeout ou falha na fonte " + fonte + ": " + ex.getMessage());
+                return Collections.emptyList();
+            });
 
+            futures.add(future);
         }
-        
+
+        List<VagaDTO> vagas = futures.stream()
+                .map(CompletableFuture::join)
+                .flatMap(List::stream)
+                .collect(Collectors.toCollection(ArrayList::new));
+
         Collections.shuffle(vagas);
-        
         return vagas;
     }
         
