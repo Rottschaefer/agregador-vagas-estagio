@@ -77,6 +77,17 @@ const BuscaForm = () => {
           </div>
 
           <div className="flex flex-wrap gap-2">
+            <button
+              type="button"
+              onClick={() => setFonteSelecionada("")}
+              className={`px-4 py-2 rounded-full text-sm font-semibold cursor-pointer ${
+                fonteSelecionada === "" || fonteSelecionada === "Todas"
+                  ? "bg-purple-600 text-white"
+                  : "bg-gray-200 text-gray-600"
+              }`}
+            >
+              Todas
+            </button>
             {fontes.map((fonte) => (
               <button
                 key={fonte}

@@ -7,7 +7,8 @@ const fetchVagas = async (
   fonte: string,
   pagina: number,
 ) => {
-  const fonteParam = fonte === "Todas" ? "" : fonte.toLowerCase();
+  const fonteParam =
+    !fonte || fonte.toLowerCase() === "todas" ? "" : fonte.toLowerCase();
 
   const url = `${URL_BASE}/buscar-vagas?fonte=${fonteParam}&termo=${nome}&local=${local}&pagina=${pagina}`;
 
