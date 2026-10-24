@@ -1,1 +1,1 @@
-export const URL_BASE = "http://localhost:8080";
+export const URL_BASE = import.meta.env.VITE_API_URL || "http://localhost:8080";
