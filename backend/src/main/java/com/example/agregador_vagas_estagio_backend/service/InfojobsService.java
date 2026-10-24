@@ -34,7 +34,7 @@ public class InfojobsService implements VagaScraper{
             .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
             .get();
             
-            return parseDocument(doc, local);
+            return parseDocument(doc, termo, local);
 
         } catch (IOException e) {
             log.error("Erro ao realizar scraping no Infojobs", e); 
@@ -43,6 +43,10 @@ public class InfojobsService implements VagaScraper{
     }
 
     public List<VagaDTO> parseDocument(Document doc, String local) {
+        return parseDocument(doc, "", local);
+    }
+
+    public List<VagaDTO> parseDocument(Document doc, String termo, String local) {
         List<VagaDTO> listaDeVagas = new ArrayList<>();
         Element jobsListUl = doc.selectFirst("div.js_vacanciesGridFragment.mb-16");
 
@@ -69,6 +73,12 @@ public class InfojobsService implements VagaScraper{
                 String localizacao = (locationElement != null) ? locationElement.ownText() : "Não encontrado";
                 if (local != null && !local.isBlank()) {
                     if (!localizacao.toLowerCase().contains(local.toLowerCase())) {
+                        continue;
+                    }
+                }
+
+                if (termo != null && !termo.isBlank()) {
+                    if (!titulo.toLowerCase().contains(termo.toLowerCase())) {
                         continue;
                     }
                 }
